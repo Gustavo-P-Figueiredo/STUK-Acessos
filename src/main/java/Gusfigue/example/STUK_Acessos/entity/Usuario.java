@@ -33,6 +33,13 @@ public class Usuario implements UserDetails {
 
     private UsuarioRoles roles;
 
+    public Usuario(String nome, String email, String senha, UsuarioRoles roles) {
+        this.nome = nome;
+        this.email = email;
+        this.senha = senha;
+        this.roles = roles;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         if (this.roles == UsuarioRoles.ADMIN) return List.of(new SimpleGrantedAuthority("ADMIN"),
