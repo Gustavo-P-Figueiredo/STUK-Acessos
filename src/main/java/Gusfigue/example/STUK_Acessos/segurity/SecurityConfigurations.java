@@ -11,13 +11,15 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.DefaultSecurityFilterChain;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @Configuration
-@EnableWebFluxSecurity
-public class SegurityConfigurations {
+@EnableWebMvc
+public class SecurityConfigurations {
 
     @Bean
-    public DefaultSecurityFilterChain segurityFilterChain(HttpSecurity httpSecurity) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
        return httpSecurity
                .csrf(csrf -> csrf.disable())
                .sessionManagement(session ->
