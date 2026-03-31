@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,27 +25,35 @@ public class AutenticacaoController {
     @Autowired
     private UsuarioRepository repository;
 
-    @PostMapping
-    @RequestMapping("/login")
-    public ResponseEntity login(@RequestBody @Valid autenticacaoDTO data) {
-        var usuarioSenha = new UsernamePasswordAuthenticationToken(data.email(), data.senha());
-        var autenticar = this.authenticationManager.authenticate(usuarioSenha);
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
-        return ResponseEntity.ok().build();
-    }
+        @PostMapping("/registrar")
+        public ResponseEntity registrar(@RequestBody @Valid registrarDTO data) {
+            if (this.repository.findByEmail(data.email()) != null) {
+                return ResponseEntity.badRequest().body("E-mail já cadastrado");
+            }
 
-    @PostMapping
-    @RequestMapping("/registrar")
-    public ResponseEntity registrar(@RequestBody @Valid registrarDTO data) {
-        if (this.repository.findByEmail(data.email()) != null)
-            return ResponseEntity.badRequest().build();
+            String senhaHash = passwordEncoder.encode(data.senha());
 
-            String senhaHash = new BCryptPasswordEncoder().encode(data.senha());
-            Usuario usuario = new Usuario(data.email(), senhaHash, data.nome(), data.roles());
+            Usuario usuario = new Usuario(
+                    data.nome(),
+                    data.email(),
+                    senhaHash,
+                    data.roles()
+            );
 
             this.repository.save(usuario);
 
             return ResponseEntity.ok().build();
-    }
+        }
+
+        @PostMapping("/login")
+        public ResponseEntity login(@RequestBody @Valid autenticacaoDTO data) {
+            var usuarioSenha = new UsernamePasswordAuthenticationToken(data.email(), data.senha());
+            var autenticar = this.authenticationManager.authenticate(usuarioSenha);
+
+            return ResponseEntity.ok().build();
+        }
 
 }
