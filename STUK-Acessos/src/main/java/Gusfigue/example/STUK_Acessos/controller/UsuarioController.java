@@ -27,6 +27,7 @@ public class UsuarioController {
                 usuario.getEmail(),
                 usuario.getRoles()
         );
+
         return ResponseEntity.ok(dto);
     }
 
@@ -48,15 +49,24 @@ public class UsuarioController {
 
     @DeleteMapping
     @RequestMapping("/delete")
-    public ResponseEntity<Usuario> deleteUsuario(@RequestParam String email) {
+    public ResponseEntity<String> deleteUsuario(@RequestParam String email) {
         Usuario usuario = usuarioService.deletarUsuario(email);
-        return ResponseEntity.ok(usuario);
+
+        UsuarioDTO dto = new UsuarioDTO(
+                usuario.getId(),
+                usuario.getNome(),
+                usuario.getEmail(),
+                usuario.getRoles()
+        );
+
+        return ResponseEntity.ok(dto + " deletado");
     }
 
     @PutMapping
-    @RequestMapping("/AtualizarUsuario")
+    @RequestMapping("/atualizarUsuario")
     public ResponseEntity<String> atualizarUsuario(@RequestBody Usuario usuario, @RequestParam String email) {
       usuarioService.atualizarDadosUsuario(email, usuario);
+
       return ResponseEntity.ok("Dados atualizado com sucesso!");
     }
 }

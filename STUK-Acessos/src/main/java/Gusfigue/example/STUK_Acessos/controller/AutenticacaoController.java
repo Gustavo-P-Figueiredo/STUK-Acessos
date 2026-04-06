@@ -4,6 +4,7 @@ import Gusfigue.example.STUK_Acessos.dto.autenticacaoDTO;
 import Gusfigue.example.STUK_Acessos.dto.registrarDTO;
 import Gusfigue.example.STUK_Acessos.entity.Usuario;
 import Gusfigue.example.STUK_Acessos.repository.UsuarioRepository;
+import Gusfigue.example.STUK_Acessos.service.TokenService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -26,11 +27,19 @@ public class AutenticacaoController {
     private UsuarioRepository repository;
 
     @Autowired
+    private TokenService tokenService;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
         @PostMapping("/registrar")
         public ResponseEntity registrar(@RequestBody @Valid registrarDTO data) {
-            if (this.repository.findByEmail(data.email()) != null) {
+            var usuarioExistente = this.repository.findByEmail(data.email());;
+
+            System.out.println("E-mail buscado: " + data.email());
+            System.out.println("Usuário encontrado no banco? " + (usuarioExistente != null));
+
+            if (this.repository.findByEmail(data.email()).isPresent()) {
                 return ResponseEntity.badRequest().body("E-mail já cadastrado");
             }
 
@@ -53,7 +62,9 @@ public class AutenticacaoController {
             var usuarioSenha = new UsernamePasswordAuthenticationToken(data.email(), data.senha());
             var autenticar = this.authenticationManager.authenticate(usuarioSenha);
 
-            return ResponseEntity.ok().build();
+            var token = tokenService.GerarToken((Usuario) autenticar.getPrincipal());
+
+            return ResponseEntity.ok("token: " + token);
         }
 
 }
