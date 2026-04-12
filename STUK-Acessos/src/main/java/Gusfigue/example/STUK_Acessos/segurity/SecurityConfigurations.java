@@ -1,6 +1,7 @@
 package Gusfigue.example.STUK_Acessos.segurity;
 
 import Gusfigue.example.STUK_Acessos.entity.UsuarioRoles;
+import Gusfigue.example.STUK_Acessos.exceptionHandler.TratarErrosAcesso;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,6 +25,9 @@ public class SecurityConfigurations {
     @Autowired
     private SecurityFilter securityFilter;
 
+    @Autowired
+    private TratarErrosAcesso tatarErrosAcesso;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
        return httpSecurity
@@ -32,11 +36,13 @@ public class SecurityConfigurations {
                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                .authorizeHttpRequests(authorize -> authorize
                        .requestMatchers(HttpMethod.POST, "/autenticacao/login").permitAll()
-                       .requestMatchers(HttpMethod.POST, "/autenticacao/registrar").permitAll()
+                       .requestMatchers(HttpMethod.POST, "/autenticacao/registrar").hasAuthority("ADMIN")
                        .requestMatchers(HttpMethod.PUT, "/usuario/atualizarUsuario").hasAuthority("ADMIN")
                        .requestMatchers(HttpMethod.DELETE, "/usuario/delete").hasAuthority("ADMIN")
                        .anyRequest().authenticated())
                .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
+               .exceptionHandling(exception -> exception
+                       .accessDeniedHandler(tatarErrosAcesso))
                .build();
     }
 
