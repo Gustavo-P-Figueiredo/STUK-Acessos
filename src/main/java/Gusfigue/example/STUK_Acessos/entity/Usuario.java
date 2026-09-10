@@ -31,6 +31,7 @@ public class Usuario implements UserDetails {
 
     private String senha;
 
+    @Enumerated(EnumType.STRING)
     private UsuarioRoles roles;
 
     public Usuario(String nome, String email, String senha, UsuarioRoles roles) {
@@ -59,7 +60,7 @@ public class Usuario implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return UserDetails.super.isEnabled();
+        return true;
     }
 
 }

@@ -8,7 +8,6 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import java.time.Instant;
-import java.util.Date;
 
 @Service
 public class TokenService {
@@ -18,12 +17,10 @@ public class TokenService {
 
     public String GerarToken(Usuario usuario) {
         try {
-            // Se 'secret' vier nulo por erro de config, o Algorithm.HMAC256 lançará erro aqui
             Algorithm algorithm = Algorithm.HMAC256(secret);
             return JWT.create()
                     .withIssuer("login-service")
                     .withSubject(usuario.getEmail())
-                    // Usar Instant diretamente é mais seguro no Java moderno
                     .withExpiresAt(Instant.now().plusSeconds(3600))
                     .sign(algorithm);
         } catch (JWTCreationException exception) {
@@ -40,7 +37,7 @@ public class TokenService {
                     .verify(token)
                     .getSubject();
         } catch (JWTVerificationException exception) {
-            return null; // Token inválido ou expirado
+            throw new RuntimeException("Token não validado", exception);
         }
     }
 }

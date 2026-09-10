@@ -4,17 +4,19 @@ import Gusfigue.example.STUK_Acessos.dto.autenticacaoDTO;
 import Gusfigue.example.STUK_Acessos.dto.registrarDTO;
 import Gusfigue.example.STUK_Acessos.entity.Usuario;
 import Gusfigue.example.STUK_Acessos.repository.UsuarioRepository;
+import Gusfigue.example.STUK_Acessos.service.TokenService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Controller;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/autenticacao")
@@ -26,27 +28,45 @@ public class AutenticacaoController {
     @Autowired
     private UsuarioRepository repository;
 
-    @PostMapping
-    @RequestMapping("/login")
-    public ResponseEntity login(@RequestBody @Valid autenticacaoDTO data) {
-        var usuarioSenha = new UsernamePasswordAuthenticationToken(data.email(), data.senha());
-        var autenticar = this.authenticationManager.authenticate(usuarioSenha);
+    @Autowired
+    private TokenService tokenService;
 
-        return ResponseEntity.ok().build();
-    }
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
-    @PostMapping
-    @RequestMapping("/registrar")
-    public ResponseEntity registrar(@RequestBody @Valid registrarDTO data) {
-        if (this.repository.findByEmail(data.email()) != null)
-            return ResponseEntity.badRequest().build();
+        @PostMapping("/registrar")
+        public ResponseEntity registrar(@RequestBody @Valid registrarDTO data) {
+            var usuarioExistente = this.repository.findByEmail(data.email());;
 
-            String senhaHash = new BCryptPasswordEncoder().encode(data.senha());
-            Usuario usuario = new Usuario(data.email(), senhaHash, data.nome(), data.roles());
+            System.out.println("E-mail buscado: " + data.email());
+            System.out.println("Usuário encontrado no banco? " + (usuarioExistente != null));
+
+            if (this.repository.findByEmail(data.email()).isPresent()) {
+                return ResponseEntity.badRequest().body("E-mail já cadastrado");
+            }
+
+            String senhaHash = passwordEncoder.encode(data.senha());
+
+            Usuario usuario = new Usuario(
+                    data.nome(),
+                    data.email(),
+                    senhaHash,
+                    data.roles()
+            );
 
             this.repository.save(usuario);
 
             return ResponseEntity.ok().build();
-    }
+        }
+
+        @PostMapping("/login")
+        public ResponseEntity login(@RequestBody @Valid autenticacaoDTO data) {
+            var usuarioSenha = new UsernamePasswordAuthenticationToken(data.email(), data.senha());
+            var autenticar = this.authenticationManager.authenticate(usuarioSenha);
+
+            var token = tokenService.GerarToken((Usuario) autenticar.getPrincipal());
+
+            return ResponseEntity.ok(Map.of("token", token));
+        }
 
 }
