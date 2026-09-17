@@ -59,4 +59,6 @@ public class TratarRequisicao {
         erro.put("detalhes", ex.getMessage());
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(erro);
     }
+
+
 }

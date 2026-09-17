@@ -1,6 +1,6 @@
 package Gusfigue.example.STUK_Acessos.dto;
 
-import Gusfigue.example.STUK_Acessos.entity.UsuarioRoles;
+import Gusfigue.example.STUK_Acessos.entity.Roles;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -20,5 +20,5 @@ public record registrarDTO(
         String senha,
 
         @NotNull(message = "Por favor informe um role de acesso")
-        UsuarioRoles roles) {
+        Roles roles) {
 }

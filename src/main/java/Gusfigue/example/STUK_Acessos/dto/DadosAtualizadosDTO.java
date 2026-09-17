@@ -1,14 +1,14 @@
 package Gusfigue.example.STUK_Acessos.dto;
 
-import Gusfigue.example.STUK_Acessos.entity.UsuarioRoles;
+import Gusfigue.example.STUK_Acessos.entity.Roles;
 
-public record DadosAtualizadosDTO(String senha, UsuarioRoles roles) {
+public record DadosAtualizadosDTO(String senha, Roles roles) {
 
     public String Senha() {
         return this.senha;
     }
 
-    public UsuarioRoles getRoles() {
+    public Roles getRoles() {
         return this.roles;
     }
 }

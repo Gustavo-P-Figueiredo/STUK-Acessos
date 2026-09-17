@@ -1,5 +1,6 @@
 package Gusfigue.example.STUK_Acessos.service;
 
+import Gusfigue.example.STUK_Acessos.entity.Usuario;
 import Gusfigue.example.STUK_Acessos.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,7 +19,7 @@ public class AutenticacaoService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<UserDetails> user = usuarioRepository.findByEmail(username);
+        Optional<Usuario> user = usuarioRepository.findByEmail(username);
         if (user.isEmpty()) {
             throw new UsernameNotFoundException(username + "não foi encontrado");
         }

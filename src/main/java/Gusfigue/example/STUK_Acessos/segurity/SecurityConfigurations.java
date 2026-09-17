@@ -1,6 +1,5 @@
 package Gusfigue.example.STUK_Acessos.segurity;
 
-import Gusfigue.example.STUK_Acessos.entity.UsuarioRoles;
 import Gusfigue.example.STUK_Acessos.exceptionHandler.TratarErrosAcesso;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -15,8 +14,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-
-import static Gusfigue.example.STUK_Acessos.entity.UsuarioRoles.ADMIN;
 
 @Configuration
 @EnableWebMvc
