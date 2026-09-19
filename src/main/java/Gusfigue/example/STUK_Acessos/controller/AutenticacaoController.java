@@ -38,8 +38,6 @@ public class AutenticacaoController {
         public ResponseEntity registrar(@RequestBody @Valid registrarDTO data) {
             var usuarioExistente = this.repository.findByEmail(data.email());;
 
-            System.out.println("E-mail buscado: " + data.email());
-            System.out.println("Usuário encontrado no banco? " + (usuarioExistente != null));
 
             if (this.repository.findByEmail(data.email()).isPresent()) {
                 return ResponseEntity.badRequest().body("E-mail já cadastrado");
