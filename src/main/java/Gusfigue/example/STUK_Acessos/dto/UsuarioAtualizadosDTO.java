@@ -1,13 +1,14 @@
 package Gusfigue.example.STUK_Acessos.dto;
 
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
-public record autenticacaoDTO(
+public record UsuarioAtualizadosDTO(
         @NotBlank
         @Email
         String email,
 
         @NotBlank
-        String senha
+        String nome
 ) {}

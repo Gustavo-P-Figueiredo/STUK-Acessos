@@ -1,7 +1,6 @@
 package Gusfigue.example.STUK_Acessos.dto;
 
+import java.util.Set;
 
-import Gusfigue.example.STUK_Acessos.entity.Roles;
-
-public record UsuarioDTO(int id, String nome, String email, Roles roles) {
+public record UsuarioDTO(Long id, String nome, String email, Set<String> roles, boolean ativo) {
 }

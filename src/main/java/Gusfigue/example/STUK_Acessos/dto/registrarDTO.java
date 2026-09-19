@@ -1,13 +1,11 @@
 package Gusfigue.example.STUK_Acessos.dto;
 
 import Gusfigue.example.STUK_Acessos.entity.Roles;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
+
+import java.util.Set;
 
 public record registrarDTO(
-
         @NotBlank(message = "Por favor informe um nome")
         String nome,
 
@@ -19,6 +17,6 @@ public record registrarDTO(
         @Size(min = 8, message = "A senha deve ter no mínimo 8 caracteres")
         String senha,
 
-        @NotNull(message = "Por favor informe um role de acesso")
-        Roles roles) {
-}
+        @NotEmpty(message = "Por favor informe um role de acesso")
+        Set<Long> roles
+) {}
