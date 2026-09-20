@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
@@ -23,9 +22,6 @@ public class UsuarioService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
-
-    @Autowired
-    private RoleRepository roleRepository;
 
     private UsuarioDTO toDTO(Usuario u) {
         Set<RolesDTO> roles = u.getRoles().stream()
@@ -49,16 +45,16 @@ public class UsuarioService {
                 .orElseThrow(() -> new EntityNotFoundException("Email não encontrado"));
     }
 
-    public Usuario deletarUsuario(String email) {
+    public UsuarioDTO deletarUsuario(String email, UsuarioDTO usuarioDTO) {
         Usuario usuario = buscarPorEmail(email);
 
         usuarioRepository.deleteByEmail(email);
-        return usuario;
+        return usuarioDTO;
     }
 
-    public Usuario buscarUsuario(String email) {
+    public UsuarioDTO buscarUsuario(String email, UsuarioDTO usuarioDTO) {
         Usuario usuario = buscarPorEmail(email);
-        return usuario;
+        return usuarioDTO;
     }
 
     public Page<UsuarioDTO> listarUsuarios(int numeroPagina, int tamanho) {

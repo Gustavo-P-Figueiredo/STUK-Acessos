@@ -45,12 +45,7 @@ public class AutenticacaoController {
 
             String senhaHash = passwordEncoder.encode(data.senha());
 
-            Usuario usuario = new Usuario(
-                    data.nome(),
-                    data.email(),
-                    senhaHash,
-                    data.roles()
-            );
+            Usuario usuario = new Usuario();
 
             this.repository.save(usuario);
 
